@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hitable
   - untracked
+  - Ground
   layers:
   - Default
   - TransparentFX
