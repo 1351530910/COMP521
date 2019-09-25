@@ -11,6 +11,8 @@ public class Game
     public static readonly Vector3 DownVector = new Vector3(0, -1, 0);
     public static readonly Quaternion Agnle90 = Quaternion.Euler(0, 90, 0);
     public static string[] disables = { "Key"};
+    public const int HMapSize = 8;
+    public const int VMapSize = 10;
     
 
 
@@ -21,17 +23,20 @@ public class Game
     public static int nTeapots = 0;
     public static int teapotCount = 0;
     public static int keyObtained = 0;
-
+    public static int[,] map = new int[HMapSize, VMapSize];
 
     [RuntimeInitializeOnLoadMethod]
     public static void Initialize()
     {
         foreach (GameObject obj in GameObject.FindObjectsOfType(typeof(GameObject)))
         {
-
             prefabs[obj.name] = obj;
             if (disables.Contains(obj.name)) obj.SetActive(false);
             if (obj.CompareTag("Hitable")) nTeapots++;
         }
     }
+
+
+
+
 }

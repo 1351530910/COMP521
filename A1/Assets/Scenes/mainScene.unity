@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657892, g: 0.4964128, b: 0.5748173, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -399,8 +399,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419107900}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.755, z: 3}
-  m_LocalScale: {x: 1, y: 8, z: 5}
+  m_LocalPosition: {x: 8.46, y: 0.755, z: -1.47}
+  m_LocalScale: {x: 0.2, y: 8, z: 5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -735,7 +735,7 @@ Transform:
   m_GameObject: {fileID: 1287055226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.755, z: 3}
-  m_LocalScale: {x: 5, y: 8, z: 1}
+  m_LocalScale: {x: 5, y: 8, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -1213,6 +1213,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Hitable
       objectReference: {fileID: 0}
+    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a66150e6b8e693240a19809c20eb2f44,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1267,11 +1272,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a66150e6b8e693240a19809c20eb2f44, type: 3}
@@ -1406,6 +1406,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Hitable
       objectReference: {fileID: 0}
+    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a66150e6b8e693240a19809c20eb2f44,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1461,11 +1466,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a66150e6b8e693240a19809c20eb2f44, type: 3}
 --- !u!1001 &1890275000
@@ -1484,6 +1484,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Hitable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a66150e6b8e693240a19809c20eb2f44,
         type: 3}
@@ -1539,11 +1544,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7119466017206045217, guid: a66150e6b8e693240a19809c20eb2f44,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a66150e6b8e693240a19809c20eb2f44, type: 3}
