@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapBuilder
@@ -18,10 +19,12 @@ public class MapBuilder
     public static bool[,] VWalls { get; set; }
     static bool[,] set;
 
+    static List<GameObject> walls = new List<GameObject>();
+
     public static void buildmap()
     {
-        HWalls = new bool[H+1, V+1];
-        VWalls = new bool[H + 1, V + 1];
+        HWalls = new bool[H+1, V+2];
+        VWalls = new bool[H + 2, V+1];
 
         //init with wall everywhere
         for (int x = 0; x < HWalls.GetUpperBound(0); x++)
@@ -29,26 +32,66 @@ public class MapBuilder
             for (int y = 0; y < HWalls.GetUpperBound(1); y++)
             {
                 HWalls[x, y] = true;
+            }
+        }
+        for (int x = 0; x < VWalls.GetUpperBound(0); x++)
+        {
+            for (int y = 0; y < VWalls.GetUpperBound(1); y++)
+            {
                 VWalls[x, y] = true;
             }
         }
+
         set = new bool[H, V];
 
         //clear up start place
-        for (int x = 0; x < HWalls.GetUpperBound(0); x++)
+        
+        for (int x = 0; x < H-1; x++)
         {
-            VWalls[x, HWalls.GetUpperBound(1) - 1] = false;
-            VWalls[x, HWalls.GetUpperBound(1) - 2] = false;
-            HWalls[x, HWalls.GetUpperBound(1) - 1] = false;
+            VWalls[x+1, 0] = false;
+            VWalls[x + 1, 1] = false;
+            HWalls[x + 1, 1] = false;
+        }
+        
+
+        redraw();
+       
+    }
+    public static void redraw()
+    {
+        foreach (var item in walls)
+        {
+            GameObject.Destroy(item);
         }
 
+        walls = new List<GameObject>();
+
+        for (int x = 0; x < HWalls.GetUpperBound(0); x++)
+        {
+            for (int y = 0; y < HWalls.GetUpperBound(1); y++)
+            {
+                if (HWalls[x,y])
+                {
+                    var wall = GameObject.Instantiate(Game.prefabs["HWall"]);
+                    wall.transform.position = new Vector3(x * walllength + 2.5f, 0, y * walllength);
+                    wall.SetActive(true);
+                    walls.Add(wall);
+                }
+            }
+        }
+        for (int x = 0; x < VWalls.GetUpperBound(0); x++)
+        {
+            for (int y = 0; y < VWalls.GetUpperBound(1); y++)
+            {
+                if (VWalls[x,y])
+                {
+                    var wall = GameObject.Instantiate(Game.prefabs["VWall"]);
+                    wall.transform.position = new Vector3(x * walllength, 0, y * walllength + 2.5f);
+                    wall.SetActive(true);
+                    walls.Add(wall);
+                }
+            }
+        }
     }
 
-    public static void drawHWall(int x,int y)
-    {
-        var wall = GameObject.Instantiate(Game.prefabs["HWall"]);
-        wall.transform.position = new Vector3(x*walllength,y*walllength)
-    }
-
-    
 }

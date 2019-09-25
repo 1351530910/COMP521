@@ -10,7 +10,7 @@ public class Game
     public static readonly Vector3 UpVector = new Vector3(0, 1, 0);
     public static readonly Vector3 DownVector = new Vector3(0, -1, 0);
     public static readonly Quaternion Agnle90 = Quaternion.Euler(0, 90, 0);
-    public static string[] disables = { "Key"};
+    public static string[] disables = { "Key","HWall","VWall"};
     public const int HMapSize = 8;
     public const int VMapSize = 10;
     
@@ -34,6 +34,8 @@ public class Game
             if (disables.Contains(obj.name)) obj.SetActive(false);
             if (obj.CompareTag("Hitable")) nTeapots++;
         }
+
+        MapBuilder.buildmap();
     }
 
 
