@@ -25,6 +25,7 @@ public class MapBuilder
     public static bool[,] HWalls { get; set; }
     public static bool[,] VWalls { get; set; }
     public static int[,] map;
+    public static bool[,] set;
 
     public static List<GameObject> walls = new List<GameObject>();
     public static GameObject entranceWall;
@@ -34,6 +35,7 @@ public class MapBuilder
     {
         //fill map with wall every side
         map = new int[H, V];
+        set = new bool[H, V];
         for (int x = 0; x < H; x++)
         {
             for (int y = 0; y < V; y++)
@@ -48,12 +50,14 @@ public class MapBuilder
         {
             map[x, 0] = down;
             map[x, 1] = up;
+            set[x, 0] = true;
+            set[x, 1] = true;
         }
         map[0, 0] = down | left;
         map[0, 1] = left;
         map[H-1, 0] = down | right;
         map[H-1, 1] = right;
-
+        
 
         createmaze();
         draw();
@@ -61,23 +65,27 @@ public class MapBuilder
 
     static void createmaze()
     {
+		System.DateTime now = System.DateTime.Now;
         System.Random r = new System.Random(System.DateTime.Now.Millisecond);
 
         v2i previous = new v2i(r.Next(H), 2);
         v2i operation = previous;
         v2i next = previous;
 
+        
+        set[previous.x, previous.y] = true;
         map[previous.x,previous.y] = allwall-down;
         int assigned = 1;
-        while (assigned<mazeSize/2)
+        while (assigned<mazeSize)
         {
             operation = operations[r.Next(operations.Length)];
             next = previous + operation;
             if (next.x >= 0 && next.x < H && next.y >= 2 && next.y < V)
             {
-                if (map[next.x,next.y] == allwall)
+                if (!set[next.x,next.y])
                 {
                     assigned++;
+                    set[next.x, next.y] = true;
                     switch (operation.ToString())
                     {
                         case "-1 0":
@@ -103,85 +111,10 @@ public class MapBuilder
                 previous = next;
             }
         }
-        
-        int steps = 0;
-        while (assigned < mazeSize && ++steps<500)
-        {
-            List<string> history = new List<string>();
-            //choose start point
-            do
-            {
-                previous = new v2i(r.Next(H), r.Next(H) + 2);
-            } while (map[previous.x, previous.y] != allwall);
-            assigned++;
-            history.Add(previous.ToString());
-        nextcell:
-            do
-            {
-                operation = operations[r.Next(operations.Length)];
-                next = previous + operation;
-            } while ((!(next.x >= 0 && next.x < H && next.y >= 2 && next.y < V)) && !history.Contains(next.ToString()));
-            history.Add(next.ToString());
-            Debug.Log(string.Join(",",history.ToArray()));
-            if (map[next.x, next.y] == allwall)
-            {
-                Debug.DrawLine(new Vector3(previous.x * 5+0.2f, 0.5f, previous.y * 5 + 0.2f), new Vector3(next.x * 5 + 0.2f, 0.5f, next.y * 5 + 0.2f), Color.blue, 3000000);
-                switch (operation.ToString())
-                {
-                    case "-1 0":
-                        map[next.x, next.y] &= (allwall - right);
-                        map[previous.x, previous.y] &= (allwall - left);
-                        break;
-                    case "1 0":
-                        map[next.x, next.y] &= (allwall - left);
-                        map[previous.x, previous.y] &= (allwall - right);
-                        break;
-                    case "0 1":
-                        map[next.x, next.y] &= (allwall - down);
-                        map[previous.x, previous.y] &= (allwall - up);
-                        break;
-                    case "0 -1":
-                        map[next.x, next.y] &= (allwall - up);
-                        map[previous.x, previous.y] &= (allwall - down);
-                        break;
-                    default:
-                        break;
-                }
-                assigned++;
-                previous = next;
-                goto nextcell;
-            }
-            else
-            {
-                Debug.DrawLine(new Vector3(previous.x * 5, 0.5f, previous.y * 5), new Vector3(next.x * 5, 0.5f, next.y * 5), Color.red, 3000000);
-                switch (operation.ToString())
-                {
-                    case "-1 0":
-                        map[next.x, next.y] &= (allwall - right);
-                        map[previous.x, previous.y] &= (allwall - left);
-                        break;
-                    case "1 0":
-                        map[next.x, next.y] &= (allwall - left);
-                        map[previous.x, previous.y] &= (allwall - right);
-                        break;
-                    case "0 1":
-                        map[next.x, next.y] &= (allwall - down);
-                        map[previous.x, previous.y] &= (allwall - up);
-                        break;
-                    case "0 -1":
-                        map[next.x, next.y] &= (allwall - up);
-                        map[previous.x, previous.y] &= (allwall - down);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        Debug.Log(steps);
+		Debug.Log((System.DateTime.Now - now).TotalMilliseconds);
+		return;
+		
     }
-
-    
 
     static void draw()
     {
@@ -228,85 +161,20 @@ public class MapBuilder
         }
     }
 
-
-
-
-    public static void buildmap()
+   
+    public static bool allset()
     {
-        HWalls = new bool[H+1, V+2];
-        VWalls = new bool[H + 2, V+1];
-
-        //init with wall everywhere
-        for (int x = 0; x < HWalls.GetUpperBound(0); x++)
+        for (int i = 0; i < H; i++)
         {
-            for (int y = 0; y < HWalls.GetUpperBound(1); y++)
+            for (int j = 0; j < V; j++)
             {
-                HWalls[x, y] = true;
-            }
-        }
-        for (int x = 0; x < VWalls.GetUpperBound(0); x++)
-        {
-            for (int y = 0; y < VWalls.GetUpperBound(1); y++)
-            {
-                VWalls[x, y] = true;
-            }
-        }
-
-
-        map = new int[H, H];
-
-        //clear up start place
-        for (int x = 0; x < H-1; x++)
-        {
-            VWalls[x+1, 0] = false;
-            VWalls[x + 1, 1] = false;
-            HWalls[x + 1, 1] = false;
-        }
-
-        generateMaze();
-        redraw();
-    }
-    public static void redraw()
-    {
-        foreach (var item in walls)
-        {
-            GameObject.Destroy(item);
-        }
-
-        walls = new List<GameObject>();
-
-        for (int x = 0; x < HWalls.GetUpperBound(0); x++)
-        {
-            for (int y = 0; y < HWalls.GetUpperBound(1); y++)
-            {
-                if (HWalls[x,y])
+                if (!set[i,j])
                 {
-                    var wall = GameObject.Instantiate(Game.prefabs["HWall"]);
-                    wall.transform.position = new Vector3(x * walllength + 2.5f, 0, y * walllength);
-                    wall.SetActive(true);
-                    walls.Add(wall);
+                    return false;
                 }
             }
         }
-        for (int x = 0; x < VWalls.GetUpperBound(0); x++)
-        {
-            for (int y = 0; y < VWalls.GetUpperBound(1); y++)
-            {
-                if (VWalls[x,y])
-                {
-                    var wall = GameObject.Instantiate(Game.prefabs["VWall"]);
-                    wall.transform.position = new Vector3(x * walllength, 0, y * walllength + 2.5f);
-                    wall.SetActive(true);
-                    walls.Add(wall);
-                }
-            }
-        }
-        
-
-    }
-    public static void generateMaze()
-    {
-        
+        return true;
     }
 
 }

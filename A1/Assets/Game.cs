@@ -21,6 +21,7 @@ public class Game
     public static int ObjectivesHit = 0;
     public static int keyObtained = 0;
     public static int[,] map = new int[HMapSize, VMapSize];
+    public static string text = "";
 
     [RuntimeInitializeOnLoadMethod]
     public static void Initialize()
