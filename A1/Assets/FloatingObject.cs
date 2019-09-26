@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class FloatingObject : MonoBehaviour
 {
-    const float period = 100f;
-    int frames = 0;
+    const float period = 100f;  
+    int time = 0; //current time
     void Start()
     {
-        frames = Random.Range(0, 360 * (int)period);
+        //start with a random height
+        time = Random.Range(0, 360 * (int)period);
     }
     void FixedUpdate()
     {
-        transform.position = new Vector3(transform.position.x, Mathf.Sin(++frames / period) / 2 + 2, transform.position.z);
-        if (frames > 360 * period)
+        //floating up and down based on time, trig function
+        transform.position = new Vector3(transform.position.x, Mathf.Sin(++time / period) / 2 + 2, transform.position.z);
+        if (time > 360 * period)
         {
-            frames -= 360 * (int)period;
+            time -= 360 * (int)period;
         }
     }
 }

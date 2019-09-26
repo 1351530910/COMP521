@@ -15,13 +15,10 @@ public class Game
     public const int VMapSize = 10;
     
 
-
-
-
     //gamedata
     public static Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject>();
-    public static int nTeapots = 0;
-    public static int teapotCount = 0;
+    public static int TotalObjectives = 0;
+    public static int ObjectivesHit = 0;
     public static int keyObtained = 0;
     public static int[,] map = new int[HMapSize, VMapSize];
 
@@ -32,10 +29,10 @@ public class Game
         {
             prefabs[obj.name] = obj;
             if (disables.Contains(obj.name)) obj.SetActive(false);
-            if (obj.CompareTag("Hitable")) nTeapots++;
+            if (obj.CompareTag("Hitable")) TotalObjectives++;
         }
 
-        MapBuilder.buildmap();
+        MapBuilder.createmap();
     }
 
 

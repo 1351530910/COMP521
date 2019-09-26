@@ -8,6 +8,7 @@ public class Key : FloatingObject
 
     void OnTriggerEnter(Collider other)
     {
+        //player obtained a key
         if (other.gameObject.name.Equals("Player"))
         {
             Game.keyObtained++;
