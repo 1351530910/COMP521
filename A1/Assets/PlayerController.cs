@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //flags
+    public static bool onset = false;
+
     //constants
     public readonly Vector3 jumpVector = new Vector3(0,14,0);    //the jump force
     public const float Hsensitivity = 10;   //horizontal sensitivity of the camera
@@ -50,6 +53,14 @@ public class PlayerController : MonoBehaviour
             bullet.SetActive(true);
             bullet.transform.position = transform.position;
             bullet.GetComponent<Rigidbody>().velocity = transform.forward * bulletForce;
+        }
+
+        if (Input.GetKey(KeyCode.Escape)&&!onset)
+        {
+            onset = true;
+            transform.position = new Vector3(21, 1, 5);
+            Game.time = 0;
+            MapBuilder.resetMap();
         }
     }
     public void OnCollisionEnter(Collision collision)

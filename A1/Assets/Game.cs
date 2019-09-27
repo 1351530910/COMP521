@@ -22,6 +22,7 @@ public class Game
     public static int keyObtained = 0;
     public static int[,] map = new int[HMapSize, VMapSize];
     public static string text = "";
+    public static int time = 0;
 
     [RuntimeInitializeOnLoadMethod]
     public static void Initialize()
@@ -33,7 +34,7 @@ public class Game
             if (obj.CompareTag("Hitable")) TotalObjectives++;
         }
 
-        MapBuilder.createmap();
+        MapBuilder.resetMap();
     }
 
 

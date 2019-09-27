@@ -25,31 +25,34 @@ public class MapBuilder
     public static bool[,] HWalls { get; set; }
     public static bool[,] VWalls { get; set; }
     public static int[,] map;
+    public static int[,] distance;
     public static bool[,] set;
 
     public static List<GameObject> walls = new List<GameObject>();
     public static GameObject entranceWall;
-    public static GameObject exitWall;
 
-    public static void createmap()
+    public static void resetMap()
     {
         //fill map with wall every side
         map = new int[H, V];
         set = new bool[H, V];
+        distance = new int[H, V];
+
         for (int x = 0; x < H; x++)
         {
             for (int y = 0; y < V; y++)
             {
                 map[x, y] = allwall;
+                set[x, y] = false;
+                distance[x, y] = int.MaxValue;
             }
         }
-
 
         //clear up initial space
         for (int x = 0; x < H; x++)
         {
             map[x, 0] = down;
-            map[x, 1] = up;
+            map[x, 1] = nowall;
             set[x, 0] = true;
             set[x, 1] = true;
         }
@@ -57,24 +60,36 @@ public class MapBuilder
         map[0, 1] = left;
         map[H-1, 0] = down | right;
         map[H-1, 1] = right;
-        
 
-        createmaze();
+        Thread t = new Thread(() =>
+        {
+            int count = 0;
+            while (createmaze() && count++ < 5) ;
+        });
+        t.Start();
+        Thread.Sleep(1000);
+        if (t.IsAlive)
+        {
+            t.Abort();
+        }
         draw();
+        PlayerController.onset = false;
     }
 
-    static void createmaze()
+    static bool createmaze()
     {
 		System.DateTime now = System.DateTime.Now;
-        System.Random r = new System.Random(System.DateTime.Now.Millisecond);
+        System.Random r = new System.Random(System.DateTime.Now.Millisecond+System.DateTime.Now.Second);
 
-        v2i previous = new v2i(r.Next(H), 2);
+        v2i previous = new v2i(r.Next(H), 9);
         v2i operation = previous;
         v2i next = previous;
 
         
         set[previous.x, previous.y] = true;
-        map[previous.x,previous.y] = allwall-down;
+        map[previous.x,previous.y] = allwall-up;
+        distance[previous.x, previous.y] = 0;
+
         int assigned = 1;
         while (assigned<mazeSize)
         {
@@ -84,6 +99,7 @@ public class MapBuilder
             {
                 if (!set[next.x,next.y])
                 {
+                    distance[next.x, next.y] = distance[previous.x, previous.y] + 1;
                     assigned++;
                     set[next.x, next.y] = true;
                     switch (operation.ToString())
@@ -111,9 +127,44 @@ public class MapBuilder
                 previous = next;
             }
         }
-		Debug.Log((System.DateTime.Now - now).TotalMilliseconds);
-		return;
-		
+        
+        Game.text = "";
+        for (int i = V-1; i >= 0; i--)
+        {
+            for (int j = 0; j < H; j++)
+            {
+                if (distance[j,i]<100)
+                {
+                    if (distance[j, i] < 10)
+                    {
+                        Game.text += "_" + distance[j, i] + " ";
+                    }
+                    else
+                    {
+                        Game.text += distance[j, i] + " ";
+                    }
+                }
+            }
+            Game.text += "\n";
+        }
+
+        int entranceIndex = 0;
+        int currmax = -1;
+        for (int i = 0; i < H; i++)
+        {
+            if (distance[i, 2] < 16 && distance[i, 2] > currmax)
+            {
+                entranceIndex = i;
+                currmax = distance[i, 2];
+            }
+        }
+        map[entranceIndex, 2] -= down;
+        Debug.Log(entranceIndex +" " +currmax);
+        if (currmax==-1)
+        {
+            return true;
+        }
+        return false;
     }
 
     static void draw()
@@ -159,22 +210,6 @@ public class MapBuilder
                 }
             }
         }
-    }
-
-   
-    public static bool allset()
-    {
-        for (int i = 0; i < H; i++)
-        {
-            for (int j = 0; j < V; j++)
-            {
-                if (!set[i,j])
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
 }
