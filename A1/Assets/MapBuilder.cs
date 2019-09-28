@@ -27,11 +27,12 @@ public class MapBuilder
     public static int[,] map;
     public static int[,] distance;
     public static bool[,] set;
+    public static int entranceID = 0;
 
     public static List<GameObject> walls = new List<GameObject>();
     public static GameObject entranceWall;
 
-    public static void resetMap()
+    public static int resetMap()
     {
         //fill map with wall every side
         map = new int[H, V];
@@ -61,22 +62,14 @@ public class MapBuilder
         map[H-1, 0] = down | right;
         map[H-1, 1] = right;
 
-        Thread t = new Thread(() =>
-        {
-            int count = 0;
-            while (createmaze() && count++ < 5) ;
-        });
-        t.Start();
-        Thread.Sleep(1000);
-        if (t.IsAlive)
-        {
-            t.Abort();
-        }
+        int max = createmaze();
+
         draw();
         PlayerController.onset = false;
+        return max;
     }
 
-    static bool createmaze()
+    static int createmaze()
     {
 		System.DateTime now = System.DateTime.Now;
         System.Random r = new System.Random(System.DateTime.Now.Millisecond+System.DateTime.Now.Second);
@@ -88,7 +81,7 @@ public class MapBuilder
         
         set[previous.x, previous.y] = true;
         map[previous.x,previous.y] = allwall-up;
-        distance[previous.x, previous.y] = 0;
+        distance[previous.x, previous.y] = 1;
 
         int assigned = 1;
         while (assigned<mazeSize)
@@ -148,23 +141,18 @@ public class MapBuilder
             Game.text += "\n";
         }
 
-        int entranceIndex = 0;
+        entranceID = 0;
         int currmax = -1;
         for (int i = 0; i < H; i++)
         {
             if (distance[i, 2] < 16 && distance[i, 2] > currmax)
             {
-                entranceIndex = i;
+                entranceID = i;
                 currmax = distance[i, 2];
             }
         }
-        map[entranceIndex, 2] -= down;
-        Debug.Log(entranceIndex +" " +currmax);
-        if (currmax==-1)
-        {
-            return true;
-        }
-        return false;
+        map[entranceID, 2] -= down;
+        return currmax;
     }
 
     static void draw()
@@ -175,6 +163,10 @@ public class MapBuilder
         }
         walls = new List<GameObject>();
 
+        entranceWall = GameObject.Instantiate(Game.prefabs["HWall"]);
+        entranceWall.transform.position = new Vector3(entranceID * walllength, 0, 1 * walllength + 2.5f);
+        entranceWall.SetActive(true);
+        Debug.Log(entranceID);
         for (int x = 0; x < H; x++)
         {
             for (int y = 0; y < V; y++)

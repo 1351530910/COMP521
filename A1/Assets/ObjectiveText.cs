@@ -8,8 +8,11 @@ public class ObjectiveText : MonoBehaviour
     
     void FixedUpdate()
     {
-        string txt = $"Teapot count : {Game.ObjectivesHit}/{Game.TotalObjectives}";
-        txt += $"\nKeys : {Game.keyObtained}/1";
+        string txt = $"Teapot count : {Game.ObjectivesHit}/{Game.objectives.Count}\n";
+        txt += $"Current time : {Game.time}\n";
+        txt += $"Maze solved : {Game.solvedCount}\n";
+        txt += $"Maze lost : {Game.lostCount}\n";
+        txt += $"Maze reset : {Game.resetCount}\n";
         GetComponent<Text>().text = txt;   
     }
 }

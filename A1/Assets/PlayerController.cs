@@ -8,14 +8,16 @@ public class PlayerController : MonoBehaviour
     public static bool onset = false;
 
     //constants
-    public readonly Vector3 jumpVector = new Vector3(0,14,0);    //the jump force
+    public static readonly Vector3 jumpVector = new Vector3(0,10,0);    //the jump force
+    public static readonly Vector3 startPosition = new Vector3(21, 1, 5);    //the jump force
     public const float Hsensitivity = 10;   //horizontal sensitivity of the camera
-    public const float bulletForce = 40;    //initial speed of the bullet when it spawn
+    public const float bulletForce = 20;    //initial speed of the bullet when it spawn
     public const float velocity = 0.1f;     //velocity of player's movement
 
     //variables
     public bool OnGround = true;    //if player on ground
     GameObject bullet;
+    
 
     public void Start()
     {
@@ -27,6 +29,16 @@ public class PlayerController : MonoBehaviour
    
     public void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Escape) && !onset)
+        {
+            Game.resetCount++;
+            Game.Reset();
+            return;
+        }
+
+
+
+
         //rotate camera based on mouse
         transform.Rotate(Game.UpVector, Input.GetAxis("Mouse X")*Hsensitivity);
 
@@ -55,13 +67,7 @@ public class PlayerController : MonoBehaviour
             bullet.GetComponent<Rigidbody>().velocity = transform.forward * bulletForce;
         }
 
-        if (Input.GetKey(KeyCode.Escape)&&!onset)
-        {
-            onset = true;
-            transform.position = new Vector3(21, 1, 5);
-            Game.time = 0;
-            MapBuilder.resetMap();
-        }
+        
     }
     public void OnCollisionEnter(Collision collision)
     {

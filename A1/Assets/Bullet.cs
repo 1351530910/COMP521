@@ -32,10 +32,10 @@ public class Bullet : MonoBehaviour
         if (other.tag.Equals("Hitable"))
         {
             Game.ObjectivesHit++;
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
 
             //if enough objective hit then the key appear
-            if (Game.ObjectivesHit==Game.TotalObjectives)
+            if (Game.ObjectivesHit==Game.objectives.Count)
             {
                 var key = Instantiate(Game.prefabs["Key"]);
                 key.transform.position = transform.position;

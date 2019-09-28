@@ -11,7 +11,8 @@ public class Key : FloatingObject
         //player obtained a key
         if (other.gameObject.name.Equals("Player"))
         {
-            Game.keyObtained++;
+            Destroy(MapBuilder.entranceWall);
+            
             gameObject.SetActive(false);
         }
     }
