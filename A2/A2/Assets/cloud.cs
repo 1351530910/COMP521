@@ -12,7 +12,7 @@ public class cloud : MonoBehaviour
     }
     public void resetwind()
     {
-        //wind = new Vector3(Random.Range(-4.0f, 4.0f), 0, 0);
+        wind = new Vector3(Random.Range(-4.0f, 4.0f), 0, 0);
     }
 
     // Update is called once per frame
@@ -23,12 +23,10 @@ public class cloud : MonoBehaviour
         //check if cloud moves out of the screen space
         if (transform.position.x > 6)
         {
-            Debug.Log(transform.position);
             transform.position = new Vector3(-6, 2, 0);
         }
         if (transform.position.x < -6)
         {
-            Debug.Log(transform.position);
             transform.position = new Vector3(6, 2, 0);
         }
     }
