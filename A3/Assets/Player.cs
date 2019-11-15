@@ -50,7 +50,11 @@ public class Player : MonoBehaviour
     }
     void nextsteps()
     {
-
+        float d = distanceToGoal(caravan);
+        float mindist = d;
+        List<int> minsteps = new List<int>();
+        List<int> steps = new List<int>();
+        inventory.Sum();
     }
     public void OnCollisionEnter(Collision collision)
     {
