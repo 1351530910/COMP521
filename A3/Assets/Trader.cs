@@ -8,18 +8,18 @@ public class Trader
     public int n = 0;
     public GameObject gameObject;
 
-    public int[,] actions =
+    public static readonly int[,] actions =
     {
         {2,0,0,0,0,0,0 },
         {-2,1,0,0,0,0,0 },
         {0,-2,1,0,0,0,0 },
-        {-4,0,0,3,0,0,0 },
+        {-4,0,0,1,0,0,0 },
         {-1,0,-1,0,1,0,0 },
         {-2,-1,0,-1,0,1,0 },
         {0,0,-4,0,0,0,1 },
         {0,-1,0,-1,-1,0,1 },
     };
-
+    public static readonly int[] modifs = { 2, -1, -1, -1, -1, -3, -3, -2 };
     public Trader(GameObject gameObject)
     {
         this.gameObject = gameObject;
@@ -52,7 +52,10 @@ public class Trader
             arr[i] = data[i] + actions[n, i];
         }
         if (arr.Any(x => x < 0))
+        {
+            Debug.Log("success");
             return data;
+        }
         else
             return arr;
     }

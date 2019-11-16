@@ -8,7 +8,6 @@ public class Main
 {
     public static List<Trader> traders = new List<Trader>();
 
-
     [RuntimeInitializeOnLoadMethod]
     public static void main()
     {
