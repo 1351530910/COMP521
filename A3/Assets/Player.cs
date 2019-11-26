@@ -21,15 +21,16 @@ public class Player : MonoBehaviour
 {
     public static Text inventoryTxt;
     public static Text caravanTxt;
-    NavMeshAgent agent;
-    public int[] inventory;
-    public int[] caravan;
-    public List<int> plan = new List<int>();
-    bool count = false;
-    float time = 0;
-
+    public static NavMeshAgent agent;
+    public static int[] inventory;
+    public static int[] caravan;
+    public static List<int> plan = new List<int>();
+    public static bool count = false;
+    public static float time = 0;
+    public static Trader target;
+    public static bool trade;
     public static List<List<int>> presets;
-
+    float timescale;
     void Start()
     {
         presets = new List<List<int>>
@@ -47,13 +48,40 @@ public class Player : MonoBehaviour
         inventoryTxt = GameObject.Find("inventoryTxt").GetComponent<Text>();
         caravanTxt = GameObject.Find("caravanTxt").GetComponent<Text>();
         agent = GetComponent<NavMeshAgent>();
+        trade = false;
         nextsteps();
-        
     }
     void Update()
     {
-        if (count && (time += Time.deltaTime) > 0.5)
+        if (inventory.Sum() == 0 && agent.destination.sqrMagnitude < 0.1f)
         {
+            Debug.Log("next");
+            nextsteps();
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            if (Time.timeScale>0.1)
+            {
+                timescale = Time.timeScale;
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = timescale;
+            }
+            
+        }
+        if (Input.GetKeyUp(KeyCode.Plus)|| Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            Time.timeScale *= 2;
+        }
+        if (Input.GetKeyUp(KeyCode.Minus) || Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            Time.timeScale /= 2;
+        }
+        if (count && (time += Time.deltaTime) > 0.5f)
+        {
+            time = 0;
             count = false;
             agent.isStopped = false;
         }
@@ -67,6 +95,14 @@ public class Player : MonoBehaviour
         {
             caravanTxt.text += $"{(Item)i} {caravan[i]}\n";
         }
+        inventoryTxt.text += "\nplan\n";
+        for (int i = 0; i < plan.Count(); i++)
+        {
+            inventoryTxt.text += $"trade with {plan[i]+1}\n";
+        }
+        inventoryTxt.text += "go to caravan";
+
+
 
     }
     void nextsteps()
@@ -99,8 +135,6 @@ public class Player : MonoBehaviour
             plan.Add(7);
         }
         agent.SetDestination(Main.traders.First(x=>x.n==plan.First()).getposition());
-        plan.RemoveAt(0);
-        Debug.Log("removed next is 0");
     }
     public void OnCollisionEnter(Collision collision)
     {
@@ -108,46 +142,34 @@ public class Player : MonoBehaviour
         if (!count&&(t = Main.traders.FirstOrDefault(x=>x.gameObject == collision.other.gameObject))!=null)
         {
             count = true;
-            agent.isStopped = true;
+            agent.isStopped= true;
             time = 0;
-            inventory = t.trade(inventory);
-            if (plan.Count()>=1)
+            
+            target = t;
+            inventory = target.trade(inventory);
+            if (plan.Count()>1)
             {
-                Debug.Log($"nextposition {plan.First()}");
-                agent.SetDestination(Main.traders.First(x => x.n == plan.First()).getposition());
                 plan.Remove(plan.First());
+                agent.SetDestination(Main.traders.First(x => x.n == plan.First()).getposition());
             }
             else
             {
+                plan.Clear();
                 agent.SetDestination(new Vector3(0, 0, 0));
+                trade = true;
             }
         }
-        if (!count && collision.other.name.Equals("Caravan"))
+        if (!count && collision.other.name.Equals("Caravan")&&trade)
         {
-            Debug.Log("to caravan");
+            
             for (int i = 0; i < caravan.Length; i++)
             {
                 caravan[i] += inventory[i];
                 inventory[i] = 0;
             }
-            nextsteps();
+            trade = false;
         }
         
     }
 
-    /// <summary>
-    /// evaluate heuristic score of current state
-    /// higher is better
-    /// </summary>
-    /// <param name="state"></param>
-    /// <returns></returns>
-    int distanceToGoal(int[] state)
-    {
-        int d = 0;
-        for (int i = 0; i < state.Length; i++)
-        {
-            d += Mathf.Min(state[i]*i, 2*i);
-        }
-        return d;
-    }
 }

@@ -28,10 +28,6 @@ public class Trader
     {
         this.n = n;
         gameObject.name = (n+1) + "";
-        if (gameObject.GetComponent<TMPro.TextMeshPro>()==null)
-        {
-            Debug.Log("not found");
-        }
         gameObject.GetComponent<TMPro.TextMeshPro>().text = (n+1) + "";
     }
     public Vector3 getposition()
@@ -51,9 +47,8 @@ public class Trader
         {
             arr[i] = data[i] + actions[n, i];
         }
-        if (arr.Any(x => x < 0))
+        if (arr.Any(x => x < 0)&&arr.Sum()>4)
         {
-            Debug.Log("success");
             return data;
         }
         else
